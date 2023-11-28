@@ -6,8 +6,8 @@ export const siteConfig = {
     "Solana Tool",
   mainNav: [
     {
-      title: "Home",
-      href: "/",
+      title: "KeyPair",
+      href: "/keypair/generate",
     },
     {
       title: "dashboard",
