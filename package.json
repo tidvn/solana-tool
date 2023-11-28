@@ -38,6 +38,7 @@
     "@solana/web3.js": "^1.87.6",
     "axios": "^1.6.2",
     "bip39": "^3.1.0",
+    "bs58": "^5.0.0",
     "class-variance-authority": "latest",
     "clsx": "latest",
     "cmdk": "^0.2.0",
@@ -52,6 +53,8 @@
     "sharp": "latest",
     "tailwind-merge": "latest",
     "tailwindcss-animate": "latest",
+    "tweetnacl": "^1.0.3",
+    "tweetnacl-util": "^0.15.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {

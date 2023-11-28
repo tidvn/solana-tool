@@ -12,18 +12,7 @@ const sidebarNavItems = [
     title: "Account",
     href: "/examples/forms/account",
   },
-  {
-    title: "Appearance",
-    href: "/examples/forms/appearance",
-  },
-  {
-    title: "Notifications",
-    href: "/examples/forms/notifications",
-  },
-  {
-    title: "Display",
-    href: "/examples/forms/display",
-  },
+  
 ]
 
 interface SettingsLayoutProps {

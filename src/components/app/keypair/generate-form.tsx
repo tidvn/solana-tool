@@ -19,6 +19,7 @@ import * as crypto from "crypto";
 import { HDKey } from "micro-ed25519-hdkey";
 import { Keypair } from "@solana/web3.js"
 import { toast } from "@/components/ui/use-toast"
+import bs58 from "bs58"
 
 
 
@@ -53,7 +54,8 @@ const GenerateForm = () => {
 
   function printKeypair(keypair: Keypair) {
     const publicKey = keypair.publicKey.toBase58()
-    const secretKey = Array.from(keypair.secretKey, byte => byte.toString(16).padStart(2, '0')).join('');
+    // const secretKey = Array.from(keypair.secretKey, byte => byte.toString(16).padStart(2, '0')).join('');
+    const secretKey  = bs58.encode(keypair.secretKey);
     return JSON.stringify({ publicKey: publicKey, secretKey: secretKey }, null, 2)
   }
 

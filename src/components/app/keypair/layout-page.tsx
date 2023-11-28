@@ -12,6 +12,10 @@ const sidebarNavItems = [
     title: "Convert KeyPair",
     href: "/keypair/convert",
   },
+  {
+    title: "Sign Messgae",
+    href: "/keypair/sign",
+  },
 ]
 
 interface KeypairLayoutProps {
