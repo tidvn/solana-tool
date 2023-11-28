@@ -24,7 +24,7 @@ import { Label } from "@/components/ui/label"
 import { useState } from "react"
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Keypair } from "@solana/web3.js"
-import { decodeBase64, decodeUTF8 } from "tweetnacl-util"
+import {  decodeUTF8 } from "tweetnacl-util"
 import bs58 from "bs58"
 import nacl from "tweetnacl"
 
@@ -43,7 +43,7 @@ const defaultValues: Partial<ProfileFormValues> = {
 }
 
 const ProfileForm = () => {
-  const wallet = useWallet();
+  const {connected ,publicKey, signMessage} = useWallet();
   const [signature, setSignature] = useState("")
   const form = useForm<ProfileFormValues>({
     defaultValues,
@@ -51,14 +51,6 @@ const ProfileForm = () => {
   })
 
 
-  // toast({
-  //   title: "signWithKeypair:",
-  //   description: (
-  //     <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-  //       <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-  //     </pre>
-  //   ),
-  // })
   function signWithKeypair(data: ProfileFormValues) {
     if (!data.keypairJson) {
       return
@@ -80,10 +72,10 @@ const ProfileForm = () => {
   async function signWithWallet(data: ProfileFormValues) {
 
     try {
-      if (wallet.connected) {
-        const publicKey = wallet.publicKey;
+      if (connected) {
         const messageBytes =  decodeUTF8(data.message);
-        const signature = await wallet.signMessage(messageBytes);
+        if (!signMessage) throw new Error('Wallet does not support message signing!'); 
+        const signature = await signMessage(messageBytes);
         setSignature(bs58.encode(signature));
       }
     } catch (e: any) {
