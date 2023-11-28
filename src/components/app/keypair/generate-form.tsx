@@ -114,7 +114,7 @@ const GenerateForm = () => {
             />
           </div>
           <Button onClick={async () => {
-            await navigator.clipboard.writeText(result.entropyByte);
+            await navigator.clipboard.writeText(result.entropyHex);
             toast({ title: "Copied" })
           }} size="sm" className="px-3">
 
