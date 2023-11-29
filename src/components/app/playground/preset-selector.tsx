@@ -20,7 +20,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-import { Preset } from "@/components/app/playground/data/presets"
+import { Preset } from "@/data/presets"
 
 interface PresetSelectorProps extends PopoverProps {
   presets: Preset[]

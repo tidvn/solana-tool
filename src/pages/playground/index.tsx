@@ -27,8 +27,8 @@ import { PresetSelector } from "@/components/app/playground/preset-selector"
 import { PresetShare } from "@/components/app/playground/preset-share"
 import { TemperatureSelector } from "@/components/app/playground/temperature-selector"
 import { TopPSelector } from "@/components/app/playground/top-p-selector"
-import { models, types } from "@/components/app/playground/data/models"
-import { presets } from "@/components/app/playground/data/presets"
+import { models, types } from "@/data/models"
+import { presets } from "@/data/presets"
 
 export const metadata: Metadata = {
   title: "Playground",

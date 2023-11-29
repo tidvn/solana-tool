@@ -10,8 +10,8 @@ export const siteConfig = {
       href: "/keypair/generate",
     },
     {
-      title: "dashboard",
-      href: "/dashboard",
+      title: "NFT Studio",
+      href: "/nft-studio",
     },
     {
       title: "forms",
