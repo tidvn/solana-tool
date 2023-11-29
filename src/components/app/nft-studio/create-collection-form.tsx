@@ -1,11 +1,9 @@
 "use client"
 
-import Link from "next/link"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useFieldArray, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import * as z from "zod"
 
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -17,18 +15,11 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
 import { MediaPicker } from "degen"
 import { useState } from "react"
-import { Card } from "@/components/ui/card"
 
 const profileFormSchema = z.object({
   collectionName: z
@@ -40,7 +31,7 @@ const profileFormSchema = z.object({
       message: "Name must not be longer than 30 characters.",
     }),
 
-  description: z.string().max(160).min(0),
+  description: z.string(),
 
 })
 
@@ -78,7 +69,7 @@ export function CreateCollectionForm({ setImageBlob }: any) {
             if (file) {
               const blobUrl = URL.createObjectURL(file);
               setImageBlob(blobUrl);
-            }else{
+            } else {
               setImageBlob("");
             }
             setuploadLoading(false);
@@ -97,7 +88,7 @@ export function CreateCollectionForm({ setImageBlob }: any) {
           name="collectionName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name(Required)</FormLabel>
+              <FormLabel>Name</FormLabel>
               <FormControl>
                 <Input placeholder="Enter a Name" {...field} />
               </FormControl>
@@ -126,7 +117,7 @@ export function CreateCollectionForm({ setImageBlob }: any) {
           )}
         />
 
-        <Button type="submit">Update profile</Button>
+        <Button type="submit">Create collection</Button>
       </form>
     </Form>
   )

@@ -35,7 +35,7 @@ export function Sidebar({ className, playlists }: SidebarProps) {
               </svg>
               Create Collection
             </Button></Link>
-            <Button variant="ghost" className="w-full justify-start">
+            {/* <Button variant="ghost" className="w-full justify-start">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -71,7 +71,7 @@ export function Sidebar({ className, playlists }: SidebarProps) {
                 <path d="M19.1 4.9C23 8.8 23 15.1 19.1 19" />
               </svg>
               Radio
-            </Button>
+            </Button> */}
           </div>
         </div>
         <div className="px-3 py-2">
@@ -79,6 +79,7 @@ export function Sidebar({ className, playlists }: SidebarProps) {
             NFT
           </h2>
           <div className="space-y-1">
+          <Link href="/nft-studio/create-nft">
             <Button variant="ghost" className="w-full justify-start">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -96,9 +97,10 @@ export function Sidebar({ className, playlists }: SidebarProps) {
                 <path d="M16 6H3" />
                 <path d="M12 18H3" />
               </svg>
-              Playlists
+              Create NFT
             </Button>
-            <Button variant="ghost" className="w-full justify-start">
+            </Link>
+            {/* <Button variant="ghost" className="w-full justify-start">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -163,7 +165,7 @@ export function Sidebar({ className, playlists }: SidebarProps) {
                 <path d="M4 4v16" />
               </svg>
               Albums
-            </Button>
+            </Button> */}
           </div>
         </div>
         <div className="py-2">
