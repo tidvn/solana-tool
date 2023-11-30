@@ -5,9 +5,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 
-export function ImagePicker() {
-    const [uploadLoading, setuploadLoading] = useState<boolean>(false);
-    const [imageUrl, setImageUrl] = useState<string>('');
+export function ImagePicker({setFile}:any) {
+
     const [imageBlob, setImageBlob] = useState<string>('');
     const [isHover, setIsHover] = useState<boolean>(false);
     if (imageBlob) {
@@ -46,21 +45,18 @@ export function ImagePicker() {
 
         <MediaPicker
             onChange={async (file) => {
-                setuploadLoading(true);
                 if (file) {
                     const blobUrl = URL.createObjectURL(file);
                     setImageBlob(blobUrl);
+                    setFile(file)
                 } else {
                     setImageBlob("");
                 }
-                setuploadLoading(false);
             }
             }
             onReset={() => {
                 setImageBlob('');
-                setImageUrl('');
-                setuploadLoading(false);
             }}
-            borderWidth="8px" label="Choose or drag and drop media" />
+            borderWidth="8px" label="Choose or drag and drop image" />
     )
 }

@@ -15,6 +15,13 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
+    "@metaplex-foundation/js": "^0.20.1",
+    "@metaplex-foundation/mpl-token-metadata": "^3.1.1",
+    "@metaplex-foundation/umi": "^0.8.10",
+    "@metaplex-foundation/umi-bundle-defaults": "^0.8.10",
+    "@metaplex-foundation/umi-signer-wallet-adapters": "^0.8.10",
+    "@metaplex-foundation/umi-uploader-bundlr": "^0.8.10",
+    "@metaplex-foundation/umi-uploader-nft-storage": "^0.8.10",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-context-menu": "^2.1.5",

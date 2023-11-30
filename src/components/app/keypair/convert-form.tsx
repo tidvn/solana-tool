@@ -55,6 +55,7 @@ const ConvertForm = () => {
         const hd = HDKey.fromMasterSeed(input.seed);
         const keypair = Keypair.fromSeed(hd.derive(path).privateKey);
         setKeypair(keypair)
+        
         printKeypair(keypair)
       } catch {
         setError("HD Path Error")
