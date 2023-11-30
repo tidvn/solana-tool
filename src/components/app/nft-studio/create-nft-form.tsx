@@ -34,6 +34,7 @@ import { createNft, mplTokenMetadata } from "@metaplex-foundation/mpl-token-meta
 import { createSignerFromKeypair, signerIdentity, generateSigner, percentAmount, createGenericFile } from "@metaplex-foundation/umi"
 import { nftStorageUploader } from '@metaplex-foundation/umi-uploader-nft-storage'
 import { siteConfig } from "@/config/site"
+import * as base58 from "bs58"
 
 const nftFormSchema = z.object({
   name: z
@@ -115,8 +116,7 @@ export function CreateNftForm() {
          },
          creators: []
      };
-     const metadat_uri = await umi.uploader.uploadJson([metadata]);
-      console.log(metadat_uri)
+     const metadat_uri = await umi.uploader.uploadJson(metadata);
       let tx = createNft (umi,{
         mint,
         name: data.name,
@@ -125,7 +125,8 @@ export function CreateNftForm() {
         sellerFeeBasisPoints: percentAmount(parseInt(data.royalty ? data.royalty : ""),2)
     }) 
     let result = await tx.sendAndConfirm(umi);
-    console.log(result)
+    const signature = base58.encode(result.signature);    
+    console.log("Mint Address: ", mint.publicKey);
     } catch (e: any) {
       console.log(e.message)
     } finally {
