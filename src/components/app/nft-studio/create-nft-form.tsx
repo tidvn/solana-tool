@@ -27,7 +27,13 @@ import { ImagePicker } from "@/components/app/nft-studio/ImagePicker"
 import { uploadImageToIPFS, uploadMetadataToIPFS } from "@/lib/upload"
 import { Metaplex, toMetaplexFileFromBrowser } from "@metaplex-foundation/js";
 import { Connection, clusterApiUrl } from "@solana/web3.js";
-
+import { useWallet } from "@solana/wallet-adapter-react"
+import { createUmi } from "@metaplex-foundation/umi-bundle-defaults"
+import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters"
+import { createNft, mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata"
+import { createSignerFromKeypair, signerIdentity, generateSigner, percentAmount, createGenericFile } from "@metaplex-foundation/umi"
+import { nftStorageUploader } from '@metaplex-foundation/umi-uploader-nft-storage'
+import { siteConfig } from "@/config/site"
 
 const nftFormSchema = z.object({
   name: z
@@ -59,7 +65,16 @@ const nftFormSchema = z.object({
 type NftFormValues = z.infer<typeof nftFormSchema>
 
 export function CreateNftForm() {
-  const [file, setFile] = useState<File>();
+  const wallet = useWallet();
+  const umi = createUmi("https://api.devnet.solana.com")
+    .use(walletAdapterIdentity(wallet))
+    .use(mplTokenMetadata())
+    umi.use(nftStorageUploader({ token: siteConfig.nftstorage_api_key }))
+
+    const mint = generateSigner(umi);
+    // const bundlrUploader = createBundlrUploader(umi);
+
+  const [file, setFile] = useState<Uint8Array>();
   const [isloading, setIsLoading] = useState<boolean>(false);
   const connection = new Connection(clusterApiUrl("devnet"));
   const form = useForm<NftFormValues>({
@@ -78,55 +93,45 @@ export function CreateNftForm() {
       if (!file) {
         return
       }
-      // const { uri, metadata } = await metaplex
-      //   .nfts()
-      //   .uploadMetadata({
-      //     name: data.name,
-      //     description: data.description,
-      //     symbol: data.symbol,
-      //     external_url: data.link,
-      //     attributes: data.attributes,
-      //     image: await toMetaplexFileFromBrowser(file)
-      //   });
-      // const nft = await metaplex
-      //   .nfts()
-      //   .create({
-      //     uri,
-      //     name: data.name,
-      //     sellerFeeBasisPoints: 100 * parseInt(data.royalty ? data.royalty : ""),
-      //   });
-      //   console.log(nft)
-      // const image_cid = await uploadImageToIPFS(file)
-      // const uri_data = {
-      //   name: data.name,
-      //   description: data.description,
-      //   symbol: data.symbol,
-      //   image: `ipfs://${image_cid}`,
-      //   external_url: data.link,
-      //   seller_fee_basis_points: 100 * parseInt(data.royalty ? data.royalty : ""),
-      //   attributes: data.attributes
-      // }
-      // const uri = await uploadMetadataToIPFS(uri_data)
-      //   let tx = createNft (umi,{
-      //     mint,
-      //     name: data.name,
-      //     symbol: data.symbol,
-      //     uri: uri,
-      //     sellerFeeBasisPoints: percentAmount(3,2)
-      // }) 
+
+        const image = createGenericFile(file, `${data.name}.png`, {contentType:"image/png"})
+        const [image_uri] = await umi.uploader.upload([image]);
+        // console.log("Your image URI: ", myUri);
+        const metadata = {
+          name: data.name,
+          symbol: data.symbol,
+          description: data.description,
+          external_url: data.link,
+          image: image_uri,
+          attributes: data.attributes,
+          seller_fee_basis_points: 100 * parseInt(data.royalty ? data.royalty : ""),
+          properties: {
+            files: [
+                 {
+                    type: "image/png",
+                    uri: image_uri
+                 },
+             ]
+         },
+         creators: []
+     };
+     const metadat_uri = await umi.uploader.uploadJson([metadata]);
+      console.log(metadat_uri)
+      let tx = createNft (umi,{
+        mint,
+        name: data.name,
+        symbol: data.symbol,
+        uri: metadat_uri,
+        sellerFeeBasisPoints: percentAmount(parseInt(data.royalty ? data.royalty : ""),2)
+    }) 
+    let result = await tx.sendAndConfirm(umi);
+    console.log(result)
     } catch (e: any) {
       console.log(e.message)
     } finally {
       setIsLoading(false)
     }
-    // toast({
-    //   title: "You submitted the following values:",
-    //   description: (
-    //     <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-    //       <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-    //     </pre>
-    //   ),
-    // })
+
   }
 
   return (

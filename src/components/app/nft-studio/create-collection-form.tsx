@@ -20,6 +20,11 @@ import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
 import { MediaPicker } from "degen"
 import { useState } from "react"
+import { useWallet } from "@solana/wallet-adapter-react"
+import { createUmi } from "@metaplex-foundation/umi-bundle-defaults"
+import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters"
+import { mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata"
+import { generateSigner } from "@metaplex-foundation/umi"
 
 const profileFormSchema = z.object({
   collectionName: z
@@ -40,6 +45,15 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>
 
 
 export function CreateCollectionForm({ setImageBlob }: any) {
+
+
+  const wallet = useWallet();
+  const umi = createUmi("https://api.devnet.solana.com")
+    .use(walletAdapterIdentity(wallet))
+    .use(mplTokenMetadata())
+    const mint = generateSigner(umi);
+
+    
   const [uploadLoading, setuploadLoading] = useState<boolean>(false);
   const [imageUrl, setImageUrl] = useState<string>('');
   const form = useForm<ProfileFormValues>({
@@ -50,14 +64,15 @@ export function CreateCollectionForm({ setImageBlob }: any) {
 
 
   function onSubmit(data: ProfileFormValues) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
+    console.log(data)
+    // toast({
+    //   title: "You submitted the following values:",
+    //   description: (
+    //     <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+    //       <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+    //     </pre>
+    //   ),
+    // })
   }
 
   return (

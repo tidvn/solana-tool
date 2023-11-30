@@ -9,6 +9,17 @@ export function ImagePicker({setFile}:any) {
 
     const [imageBlob, setImageBlob] = useState<string>('');
     const [isHover, setIsHover] = useState<boolean>(false);
+    const readFileAsArrayBuffer = (file: File): Promise<ArrayBuffer> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = (event) =>
+        event.target?.result instanceof ArrayBuffer ? resolve(event.target.result) : reject(new Error('Invalid result type'));
+
+      reader.onerror = (error) => reject(error);
+
+      reader.readAsArrayBuffer(file);
+    });
     if (imageBlob) {
         return (
             <div className={`mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[450px]`}>
@@ -48,7 +59,9 @@ export function ImagePicker({setFile}:any) {
                 if (file) {
                     const blobUrl = URL.createObjectURL(file);
                     setImageBlob(blobUrl);
-                    setFile(file)
+                    const arrayBuffer = await readFileAsArrayBuffer(file);
+                    const uint8Array = new Uint8Array(arrayBuffer);
+                    setFile(uint8Array)
                 } else {
                     setImageBlob("");
                 }

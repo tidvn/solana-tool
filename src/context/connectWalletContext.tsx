@@ -23,6 +23,8 @@ import {
   // SolletWalletAdapter,
 } from "@solana/wallet-adapter-wallets"
 import { clusterApiUrl } from "@solana/web3.js"
+import { createUmi } from "@metaplex-foundation/umi"
+import { mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata"
 
 // Default styles that can be overridden by your app
 // require("@/styles/wallet.css")
@@ -60,6 +62,7 @@ export const Wallet: FC<Props> = ({ children }: Props) => {
     []
   )
 
+
   return (
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
@@ -68,3 +71,7 @@ export const Wallet: FC<Props> = ({ children }: Props) => {
     </ConnectionProvider>
   )
 }
+function mplCandyMachine(): import("@metaplex-foundation/umi").UmiPlugin {
+  throw new Error("Function not implemented.")
+}
+
