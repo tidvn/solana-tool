@@ -153,7 +153,9 @@ export function CreateNftForm() {
               <p className="text-sm text-muted-foreground">
                 You can create a single NFT or editions. Open Editions allow you to create an unlimited number of prints. Limited Editions allow you to set a limit to how many prints can be created from the original.
               </p>
+
             </div>
+            
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <Tabs defaultValue="basics" className="h-full space-y-6">
