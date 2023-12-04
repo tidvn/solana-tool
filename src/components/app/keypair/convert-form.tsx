@@ -66,7 +66,8 @@ const ConvertForm = () => {
 
   function printKeypair(keypair: Keypair) {
     const publicKey = keypair.publicKey.toBase58()
-    const secretKey = bs58.encode(keypair.secretKey);
+    // const secretKey = bs58.encode(keypair.secretKey);
+    const secretKey = Array.from(keypair.secretKey);
     return JSON.stringify({ publicKey: publicKey, secretKey: secretKey }, null, 2)
   }
 
