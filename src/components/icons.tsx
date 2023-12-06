@@ -6,7 +6,7 @@ export const Icons: any = {
   sun: SunMedium,
   moon: Moon,
   twitter: Twitter,
-  logo: (props: LucideProps) => (solana),
+  logo: (props: LucideProps) => (<Image src={solana} className={props.className} alt="Solana Logo"/>),
   gitHub: (props: LucideProps) => (
     <svg viewBox="0 0 438.549 438.549" {...props}>
       <path
