@@ -1,5 +1,6 @@
 import { LucideIcon, LucideProps, Moon, SunMedium, Twitter } from "lucide-react"
 import solana from "@/public/solana.svg"
+import Image from "next/image"
 export type Icon = LucideIcon
 
 export const Icons: any = {

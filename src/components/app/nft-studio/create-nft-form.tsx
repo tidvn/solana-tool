@@ -272,7 +272,7 @@ export function CreateNftForm() {
                   </TabsContent>
                   <TabsContent
                     value="properties"
-                    className="h-full flex-col border-none p-0 data-[state=active]:flex"
+                    className="h-[29rem] flex-col border-none p-0 data-[state=active]:flex"
                   >
                     <div>
                       {fields.map((field, index) => (<>
