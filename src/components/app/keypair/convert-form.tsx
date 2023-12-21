@@ -55,7 +55,7 @@ const ConvertForm = () => {
         const hd = HDKey.fromMasterSeed(input.seed);
         const keypair = Keypair.fromSeed(hd.derive(path).privateKey);
         setKeypair(keypair)
-        
+
         printKeypair(keypair)
       } catch {
         setError("HD Path Error")
@@ -66,8 +66,8 @@ const ConvertForm = () => {
 
   function printKeypair(keypair: Keypair) {
     const publicKey = keypair.publicKey.toBase58()
-    // const secretKey = bs58.encode(keypair.secretKey);
-    const secretKey = Array.from(keypair.secretKey);
+    const secretKey = bs58.encode(keypair.secretKey);
+    // const secretKey = Array.from(keypair.secretKey);
     return JSON.stringify({ publicKey: publicKey, secretKey: secretKey }, null, 2)
   }
 
@@ -205,8 +205,21 @@ const ConvertForm = () => {
               className="h-15"
             />
           </div>
-
         </div>
+        <div className="flex items-center space-x-2 pt-4">
+          <div className="grid flex-1 gap-2">
+            <Label htmlFor="link">
+              secret key
+            </Label>
+            <Input
+              id="secretKey"
+              value={error == "" ? JSON.stringify(Array.from(keypair.secretKey)) : ""}
+              readOnly
+              className="h-15"
+            />
+          </div>
+        </div>
+
         <div className="flex items-center space-x-2 pt-4">
           <div className="grid flex-1 gap-2">
             <Label htmlFor="link">

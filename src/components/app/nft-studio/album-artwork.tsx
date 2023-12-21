@@ -1,7 +1,7 @@
 import Image from "next/image"
 import { PlusCircledIcon } from "@radix-ui/react-icons"
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils/cn"
 import {
   ContextMenu,
   ContextMenuContent,
@@ -13,18 +13,18 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu"
 
-import { Album } from "@/data/albums"
+// import { Album } from "@/data/datas"
 import { playlists } from "@/data/playlists"
 
 interface AlbumArtworkProps extends React.HTMLAttributes<HTMLDivElement> {
-  album: Album
+  data: any
   aspectRatio?: "portrait" | "square"
   width?: number
   height?: number
 }
 
 export function AlbumArtwork({
-  album,
+  data,
   aspectRatio = "portrait",
   width,
   height,
@@ -37,8 +37,8 @@ export function AlbumArtwork({
         <ContextMenuTrigger>
           <div className="overflow-hidden rounded-md">
             <Image
-              src={album.cover}
-              alt={album.name}
+              src={(`${data.image}`).startsWith("http") ? data.image : "https://images.unsplash.com/photo-1682686580391-615b1f28e5ee?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHx8" }
+              alt={data.name}
               width={width}
               height={height}
               className={cn(
@@ -87,8 +87,8 @@ export function AlbumArtwork({
         </ContextMenuContent>
       </ContextMenu>
       <div className="space-y-1 text-sm">
-        <h3 className="font-medium leading-none">{album.name}</h3>
-        <p className="text-xs text-muted-foreground">{album.artist}</p>
+        <h3 className="font-medium leading-none">{data.name}</h3>
+        <p className="text-xs text-muted-foreground">{data.description}</p>
       </div>
     </div>
   )

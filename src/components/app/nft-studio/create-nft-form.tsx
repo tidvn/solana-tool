@@ -25,7 +25,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useState } from "react"
 import { ImagePicker } from "@/components/app/nft-studio/ImagePicker"
 import { uploadImageToIPFS, uploadMetadataToIPFS } from "@/lib/upload"
-import { Metaplex, toMetaplexFileFromBrowser } from "@metaplex-foundation/js";
 import { Connection, clusterApiUrl } from "@solana/web3.js";
 import { useWallet } from "@solana/wallet-adapter-react"
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults"
@@ -70,12 +69,12 @@ export function CreateNftForm() {
   const umi = createUmi("https://api.devnet.solana.com")
     .use(walletAdapterIdentity(wallet))
     .use(mplTokenMetadata())
-    umi.use(nftStorageUploader({ token: siteConfig.nftstorage_api_key }))
+  umi.use(nftStorageUploader({ token: siteConfig.nftstorage_api_key }))
 
-    const mint = generateSigner(umi);
-    // const bundlrUploader = createBundlrUploader(umi);
+  const mint = generateSigner(umi);
+  // const bundlrUploader = createBundlrUploader(umi);
 
-  const [file, setFile] = useState<Uint8Array>();
+  const [image, setImage] = useState<Uint8Array>();
   const [isloading, setIsLoading] = useState<boolean>(false);
   const connection = new Connection(clusterApiUrl("devnet"));
   const form = useForm<NftFormValues>({
@@ -91,42 +90,41 @@ export function CreateNftForm() {
   async function onSubmit(data: NftFormValues) {
     try {
       setIsLoading(true)
-      if (!file) {
+      if (!image) {
         return
       }
 
-        const image = createGenericFile(file, `${data.name}.png`, {contentType:"image/png"})
-        const [image_uri] = await umi.uploader.upload([image]);
-        // console.log("Your image URI: ", myUri);
-        const metadata = {
-          name: data.name,
-          symbol: data.symbol,
-          description: data.description,
-          external_url: data.link,
-          image: image_uri,
-          attributes: data.attributes,
-          seller_fee_basis_points: 100 * parseInt(data.royalty ? data.royalty : ""),
-          properties: {
-            files: [
-                 {
-                    type: "image/png",
-                    uri: image_uri
-                 },
-             ]
-         },
-         creators: []
-     };
-     const metadat_uri = await umi.uploader.uploadJson(metadata);
-      let tx = createNft (umi,{
+      const imageGeneric = createGenericFile(image, `${data.name}.png`, { contentType: "image/png" })
+      const [image_uri] = await umi.uploader.upload([imageGeneric]);
+      const metadata = {
+        name: data.name,
+        symbol: data.symbol,
+        description: data.description,
+        website: data.link,
+        image: image_uri,
+        attributes: data.attributes,
+        seller_fee_basis_points: 100 * parseInt(data.royalty ? data.royalty : ""),
+        properties: {
+          images: [
+            {
+              type: "image/png",
+              uri: image_uri
+            },
+          ]
+        },
+        creators: []
+      };
+      const metadat_uri = await umi.uploader.uploadJson(metadata);
+      let tx = createNft(umi, {
         mint,
         name: data.name,
         symbol: data.symbol,
         uri: metadat_uri,
-        sellerFeeBasisPoints: percentAmount(parseInt(data.royalty ? data.royalty : ""),2)
-    }) 
-    let result = await tx.sendAndConfirm(umi);
-    const signature = base58.encode(result.signature);    
-    console.log("Mint Address: ", mint.publicKey);
+        sellerFeeBasisPoints: percentAmount(parseInt(data.royalty ? data.royalty : ""), 2)
+      })
+      let result = await tx.sendAndConfirm(umi);
+      const signature = base58.encode(result.signature);
+      console.log("Mint Address: ", mint.publicKey);
     } catch (e: any) {
       console.log(e.message)
     } finally {
@@ -141,7 +139,7 @@ export function CreateNftForm() {
       <div className="container relative hidden h-[800px] flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0  rounded-md border border-dashed">
 
         <div className="lg:p-8 ">
-          <ImagePicker setFile={setFile} />
+          <ImagePicker setImage={setImage} />
 
         </div>
         <div className="lg:p-8">
@@ -155,7 +153,7 @@ export function CreateNftForm() {
               </p>
 
             </div>
-            
+
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <Tabs defaultValue="basics" className="h-full space-y-6">
@@ -169,7 +167,7 @@ export function CreateNftForm() {
                   </div>
                   <TabsContent
                     value="basics"
-                    className="border-none p-0 outline-none"
+                    className="h-[29rem] border-none p-0 outline-none"
                   ><FormField
                       control={form.control}
                       name="name"

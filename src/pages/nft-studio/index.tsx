@@ -10,17 +10,55 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
+import { DigitalAsset, fetchAllDigitalAssetByCreator, mplTokenMetadata } from '@metaplex-foundation/mpl-token-metadata'
 
 import { AlbumArtwork } from "@/components/app/nft-studio/album-artwork"
 import { PodcastEmptyPlaceholder } from "@/components/app/nft-studio/podcast-empty-placeholder"
 import { listenNowAlbums, madeForYouAlbums } from "@/data/albums"
 import NftStudioLayout from "@/components/app/nft-studio/layout-page"
-export const metadata: Metadata = {
-    title: "Music App",
-    description: "Example music app using the components.",
-}
+import { useEffect, useState } from "react"
+import { createUmi } from "@metaplex-foundation/umi-bundle-defaults"
+import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters"
+import { useWallet } from "@solana/wallet-adapter-react"
+import { generateSigner, publicKey } from "@metaplex-foundation/umi"
+import { any } from "zod"
+import { handlePublicKey } from "@/utils/handlePublicKey"
+import { it } from "node:test"
+import { getMetadata } from "@/utils/getMetadata"
 
 export default function MusicPage() {
+    const wallet = useWallet();
+    const { connected,publicKey } = wallet
+    const [assets, setAssets] = useState<any>();
+
+    const umi = createUmi("https://api.devnet.solana.com")
+        .use(walletAdapterIdentity(wallet))
+        .use(mplTokenMetadata())
+
+    const mint = generateSigner(umi);
+
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (publicKey) {
+                try {
+                    const assets = await Promise.all(await fetchAllDigitalAssetByCreator(umi, handlePublicKey(publicKey)));
+                    
+                    const dataPromises = assets.map(async (item: any) => {
+                        console.log(item.metadata.collectionDetails)
+                        return await getMetadata(item.metadata.uri);
+                    });
+                    const data = await Promise.all(dataPromises);
+                    setAssets(data);
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                }
+            }
+        };
+
+        fetchData();
+    }, [publicKey]);
+
     return (
         <>
             <NftStudioLayout>
@@ -62,16 +100,23 @@ export default function MusicPage() {
                             <div className="relative">
                                 <ScrollArea>
                                     <div className="flex space-x-4 pb-4">
-                                        {listenNowAlbums.map((album) => (
-                                            <AlbumArtwork
-                                                key={album.name}
-                                                album={album}
-                                                className="w-[250px]"
-                                                aspectRatio="portrait"
-                                                width={250}
-                                                height={330}
-                                            />
-                                        ))}
+                                        {assets && assets.map((item: any) =>
+                                        //  {
+                                        //     console.log(item)
+
+                                        //     return ""
+                                        // }
+                                            (
+                                                <AlbumArtwork
+                                                    key={item.name}
+                                                    data={item}
+                                                    className="w-[250px]"
+                                                    aspectRatio="portrait"
+                                                    width={250}
+                                                    height={330}
+                                                />
+                                            )
+                                        )}
                                     </div>
                                     <ScrollBar orientation="horizontal" />
                                 </ScrollArea>
@@ -88,7 +133,7 @@ export default function MusicPage() {
                             <div className="relative">
                                 <ScrollArea>
                                     <div className="flex space-x-4 pb-4">
-                                        {madeForYouAlbums.map((album) => (
+                                        {/* {madeForYouAlbums.map((album) => (
                                             <AlbumArtwork
                                                 key={album.name}
                                                 album={album}
@@ -97,7 +142,7 @@ export default function MusicPage() {
                                                 width={150}
                                                 height={150}
                                             />
-                                        ))}
+                                        ))} */}
                                     </div>
                                     <ScrollBar orientation="horizontal" />
                                 </ScrollArea>

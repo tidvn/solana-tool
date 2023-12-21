@@ -1,10 +1,10 @@
 import { MediaPicker } from "degen"
 import { useState } from "react";
 import Image from "next/image"
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 
 
-export function ImagePicker({setFile}:any) {
+export function ImagePicker({setImage}:any) {
 
     const [imageBlob, setImageBlob] = useState<string>('');
     const [isHover, setIsHover] = useState<boolean>(false);
@@ -60,7 +60,7 @@ export function ImagePicker({setFile}:any) {
                     setImageBlob(blobUrl);
                     const arrayBuffer = await readFileAsArrayBuffer(file);
                     const uint8Array = new Uint8Array(arrayBuffer);
-                    setFile(uint8Array)
+                    setImage(uint8Array)
                 } else {
                     setImageBlob("");
                 }

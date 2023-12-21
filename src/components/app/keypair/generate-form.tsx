@@ -27,7 +27,7 @@ import bs58 from "bs58"
 
 const GenerateForm = () => {
   const [path, setPath] = useState(`m/44'/501'/0'/0'`)
-  const [keypair, setKeypair] = useState(new Keypair())
+  const [keypair, setKeypair] = useState<Keypair>()
   const [error, setError] = useState("")
 
   const [result, setResult] = useState({
@@ -51,12 +51,12 @@ const GenerateForm = () => {
 
     }
   }, [path, result]);
-
+  console.log(keypair)
   function printKeypair(keypair: Keypair) {
     const publicKey = keypair.publicKey.toBase58()
-    // const secretKey = Array.from(keypair.secretKey, byte => byte.toString(16).padStart(2, '0')).join('');
-    const secretKey  = bs58.encode(keypair.secretKey);
-    return JSON.stringify({ publicKey: publicKey, secretKey: secretKey }, null, 2)
+    // const secretKey = Array.from(keypair.secretKey);
+    const secretKeyBs58 = bs58.encode(keypair.secretKey);
+    return JSON.stringify({ publicKey: publicKey, secretKey: secretKeyBs58 }, null, 2)
   }
 
   function onSubmit() {
@@ -184,13 +184,14 @@ const GenerateForm = () => {
             </Label>
             <Input
               id="publicKey"
-              value={error == "" ? keypair.publicKey.toBase58() : ""}
+              value={error == "" && keypair ? keypair.publicKey.toBase58() : ""}
               readOnly
               className="h-15"
             />
           </div>
+
           <Button onClick={async () => {
-            await navigator.clipboard.writeText(error == "" ? keypair.publicKey.toBase58() : "");
+            await navigator.clipboard.writeText(error == "" && keypair ? keypair.publicKey.toBase58() : "");
 
             toast({ title: "Copied" })
           }} size="sm" className="px-3">
@@ -198,6 +199,32 @@ const GenerateForm = () => {
             <CopyIcon className="h-4 w-4" />
           </Button>
         </div>
+
+        <div className="flex items-center space-x-2 pt-4">
+          <div className="grid flex-1 gap-2">
+            <Label htmlFor="link">
+              secret key
+            </Label>
+            <Input
+              id="secretKey"
+              value={error == "" && keypair ? JSON.stringify(Array.from(keypair.secretKey)) : ""}
+              readOnly
+              className="h-15"
+            />
+          </div>
+
+          <Button onClick={async () => {
+            await navigator.clipboard.writeText(error == "" && keypair ? JSON.stringify(Array.from(keypair.secretKey)) : "");
+
+            toast({ title: "Copied" })
+          }} size="sm" className="px-3">
+
+            <CopyIcon className="h-4 w-4" />
+          </Button>
+        </div>
+
+
+
         <div className="flex items-center space-x-2 pt-4">
           <div className="grid flex-1 gap-2">
             <Label htmlFor="link">
@@ -205,14 +232,14 @@ const GenerateForm = () => {
             </Label>
             <Textarea
               id="keypairJson"
-              value={error == "" ? printKeypair(keypair) : ""}
+              value={error == "" && keypair ? printKeypair(keypair) : ""}
               readOnly
               className="min-h-[200px]"
 
             />
           </div>
           <Button onClick={async () => {
-            await navigator.clipboard.writeText(error == "" ? printKeypair(keypair) : "");
+            await navigator.clipboard.writeText(error == "" && keypair ? printKeypair(keypair) : "");
             toast({ title: "Copied" })
           }} size="sm" className="px-3">
 
